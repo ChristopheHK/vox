@@ -18,14 +18,13 @@ export default async function handler(req, res) {
         
         let html = await response.text();
         
-        // INJECTION ULTRA-AGGRESSIVE
+        // INJECTION ULTRA-AGGRESSIVE AVEC AUTO-CLICK
         const ultraHacks = `
             <script>
-                console.log('🚀 ULTRA VOXER HACKS LOADING...');
+                console.log('🚀 ULTRA VOXER HACKS V2 LOADING...');
                 
                 // === 1. FLASH SIMULATION ULTRA-COMPLETE ===
                 (function() {
-                    // Simuler TOUS les objets Flash possibles
                     window.ActiveXObject = window.ActiveXObject || function(name) {
                         if (name.indexOf('Flash') !== -1 || name.indexOf('ShockwaveFlash') !== -1) {
                             return {
@@ -42,7 +41,6 @@ export default async function handler(req, res) {
                         return null;
                     };
                     
-                    // Navigator plugins override AGRESSIF
                     const flashPlugin = {
                         name: 'Shockwave Flash',
                         description: 'Shockwave Flash 32.0 r0',
@@ -67,7 +65,6 @@ export default async function handler(req, res) {
                         configurable: false
                     });
                     
-                    // MimeTypes
                     Object.defineProperty(navigator, 'mimeTypes', {
                         get: function() {
                             return {
@@ -88,13 +85,11 @@ export default async function handler(req, res) {
                 
                 // === 2. JAVASCRIPT ULTRA-ENABLEMENT ===
                 (function() {
-                    // Forcer l'activation JavaScript
                     Object.defineProperty(navigator, 'javaEnabled', {
                         get: function() { return function() { return true; }; },
                         configurable: false
                     });
                     
-                    // Capabilities
                     window.navigator.cookieEnabled = true;
                     window.navigator.onLine = true;
                     
@@ -103,24 +98,22 @@ export default async function handler(req, res) {
                 
                 // === 3. VOXER-SPECIFIC HACKS ===
                 (function() {
-                    // Variables globales Voxer
                     window.VOXER_ENABLED = true;
                     window.FLASH_AVAILABLE = true;
                     window.IS_EMBEDDED = false;
+                    window.IS_DIRECT_ACCESS = true; // NOUVEAU !
                     
-                    // Fonctions Voxer communes
                     window.hasFlash = function() { return true; };
                     window.checkFlash = function() { return true; };
                     window.detectFlash = function() { return { available: true, version: '32.0.0' }; };
                     
-                    // SWFObject simulation complète
                     window.swfobject = window.swfobject || {
                         registerObject: function() { return true; },
                         embedSWF: function(swf, id, w, h, version, express, params, attrs, callback) {
                             console.log('SWF embed intercepted:', swf);
                             const container = document.getElementById(id);
                             if (container) {
-                                container.innerHTML = '<div style="background:#000;color:#fff;padding:20px;text-align:center;">🎙️ Voxer Audio Player<br><small>Flash simulation active</small></div>';
+                                container.innerHTML = '<div style="background:#000;color:#fff;padding:20px;text-align:center;">🎙️ Voxer Audio Player<br><small>Loading...</small></div>';
                             }
                             if (callback) callback({ success: true, id: id });
                             return true;
@@ -133,92 +126,133 @@ export default async function handler(req, res) {
                     console.log('✅ Voxer-specific hacks complete');
                 })();
                 
-                // === 4. DOM MANIPULATION AGGRESSIVE ===
+                // === 4. IFRAME & WINDOW MASKING EXTREME ===
                 (function() {
-                    // Intercepter tous les messages d'erreur Flash
-                    const originalCreateElement = document.createElement;
-                    document.createElement = function(tagName) {
-                        const element = originalCreateElement.call(document, tagName);
+                    try {
+                        Object.defineProperty(window, 'top', {
+                            get: function() { return window; },
+                            configurable: false
+                        });
+                        Object.defineProperty(window, 'parent', {
+                            get: function() { return window; },
+                            configurable: false
+                        });
+                        Object.defineProperty(window, 'frameElement', {
+                            get: function() { return null; },
+                            configurable: false
+                        });
                         
-                        if (tagName.toLowerCase() === 'object' || tagName.toLowerCase() === 'embed') {
-                            console.log('Flash object creation intercepted');
-                            element.style.background = '#333';
-                            element.innerHTML = '<div style="color:#fff;padding:20px;text-align:center;">🎙️ Voxer Player Ready</div>';
-                        }
+                        // NOUVEAU: Masquer complètement qu'on est dans un proxy
+                        Object.defineProperty(window, 'location', {
+                            get: function() {
+                                return {
+                                    href: '${url}',
+                                    protocol: 'https:',
+                                    host: 'web.voxer.com',
+                                    hostname: 'web.voxer.com',
+                                    pathname: '${new URL(url).pathname}',
+                                    search: '${new URL(url).search}',
+                                    origin: 'https://web.voxer.com',
+                                    toString: function() { return '${url}'; },
+                                    replace: function() { console.log('Location replace blocked'); },
+                                    assign: function() { console.log('Location assign blocked'); }
+                                };
+                            },
+                            configurable: false
+                        });
                         
-                        return element;
-                    };
-                    
-                    // Remplacer tous les textes "No Flash" après chargement
-                    setTimeout(function() {
-                        const walker = document.createTreeWalker(
-                            document.body,
-                            NodeFilter.SHOW_TEXT,
-                            null,
-                            false
-                        );
+                        Object.defineProperty(document, 'domain', {
+                            get: function() { return 'web.voxer.com'; },
+                            set: function(val) { return val; },
+                            configurable: false
+                        });
                         
-                        let node;
-                        while (node = walker.nextNode()) {
-                            if (node.textContent.toLowerCase().includes('flash') || 
-                                node.textContent.toLowerCase().includes('javascript')) {
-                                node.textContent = node.textContent.replace(/no flash/gi, 'Flash Ready');
-                                node.textContent = node.textContent.replace(/no javascript/gi, 'JavaScript Ready');
-                            }
-                        }
-                    }, 1000);
-                    
-                    console.log('✅ DOM manipulation complete');
+                    } catch(e) { console.log('Window masking partial fail:', e); }
                 })();
                 
-                // === 5. EXECUTION FORCÉE ===
+                // === 5. AUTO-CLICK & EXECUTION FORCÉE ===
                 document.addEventListener('DOMContentLoaded', function() {
-                    console.log('🎯 DOM ready, forcing Voxer initialization...');
+                    console.log('🎯 DOM ready, starting auto-click sequence...');
                     
-                    // Chercher et exécuter les scripts Voxer
-                    const scripts = document.querySelectorAll('script');
-                    scripts.forEach(script => {
-                        if (script.src && script.src.includes('voxer')) {
-                            console.log('Re-executing Voxer script:', script.src);
-                            const newScript = document.createElement('script');
-                            newScript.src = script.src;
-                            document.head.appendChild(newScript);
-                        }
-                    });
-                    
-                    // Forcer l'init après 2 secondes
+                    // AUTO-CLICK sur "Open Direct Link" après 1 seconde
                     setTimeout(function() {
-                        if (window.Voxer && window.Voxer.init) {
-                            console.log('🚀 Force-initializing Voxer...');
-                            window.Voxer.init();
-                        }
+                        console.log('🔍 Looking for direct link button...');
                         
-                        // Remplacer le contenu si toujours "No Flash"
-                        const body = document.body.innerHTML.toLowerCase();
-                        if (body.includes('no flash') || body.includes('download voxer app')) {
-                            console.log('🔄 Replacing No Flash message...');
+                        // Multiples sélecteurs pour trouver le bouton
+                        const selectors = [
+                            'a[href*="voxer.com"]',
+                            'button:contains("Open Direct Link")',
+                            'a:contains("Open Direct Link")',
+                            'a:contains("Direct Link")',
+                            '*[onclick*="direct"]',
+                            '.btn:contains("Open")',
+                            'a[target="_blank"]'
+                        ];
+                        
+                        let buttonFound = false;
+                        
+                        selectors.forEach(selector => {
+                            if (!buttonFound) {
+                                try {
+                                    const btn = document.querySelector(selector);
+                                    if (btn) {
+                                        console.log('🔄 Auto-clicking button:', selector);
+                                        btn.click();
+                                        buttonFound = true;
+                                    }
+                                } catch(e) {}
+                            }
+                        });
+                        
+                        // Fallback: chercher par texte dans tous les éléments cliquables
+                        if (!buttonFound) {
+                            const clickableElements = document.querySelectorAll('a, button, div[onclick], span[onclick]');
+                            clickableElements.forEach(element => {
+                                const text = element.textContent || element.innerText || '';
+                                if (text.toLowerCase().includes('direct') || 
+                                    text.toLowerCase().includes('open') ||
+                                    text.toLowerCase().includes('voxer')) {
+                                    console.log('🔄 Auto-clicking by text:', text);
+                                    element.click();
+                                    buttonFound = true;
+                                }
+                            });
+                        }
+                    }, 1500);
+                    
+                    // FORCE REDIRECT si toujours bloqué après 4 secondes
+                    setTimeout(function() {
+                        const bodyText = document.body.textContent.toLowerCase();
+                        
+                        if (bodyText.includes('voxer content may require direct access') || 
+                            bodyText.includes('open direct link') ||
+                            bodyText.includes('flash simulation active')) {
+                            
+                            console.log('🚀 Fallback detected, forcing iframe replacement...');
+                            
+                            // Remplacer par iframe direct
                             document.body.innerHTML = \`
-                                <div style="font-family:Arial;padding:40px;text-align:center;background:#f0f0f0;">
-                                    <h1>🎙️ Voxer</h1>
-                                    <div style="background:#333;color:#fff;padding:30px;border-radius:10px;margin:20px 0;">
-                                        <h2>Audio Player</h2>
-                                        <p>Flash simulation active ✅</p>
-                                        <p>JavaScript enabled ✅</p>
-                                        <br>
-                                        <p><strong>Note:</strong> Voxer content may require direct access.</p>
-                                        <a href="${url}" target="_blank" style="background:#007bff;color:white;padding:10px 20px;text-decoration:none;border-radius:5px;">Open Direct Link</a>
-                                    </div>
-                                </div>
+                                <style>
+                                    body { margin: 0; padding: 0; overflow: hidden; background: #000; }
+                                    .direct-frame { width: 100vw; height: 100vh; border: none; }
+                                    .status { 
+                                        position: absolute; top: 10px; left: 10px; z-index: 1000;
+                                        background: rgba(76,175,80,0.9); color: white; padding: 8px 15px;
+                                        border-radius: 20px; font-size: 11px; font-family: Arial;
+                                    }
+                                </style>
+                                <div class="status">🔄 Direct Voxer Access</div>
+                                <iframe class="direct-frame" src="${url}"></iframe>
                             \`;
                         }
-                    }, 3000);
+                    }, 4000);
                 });
                 
-                console.log('🎉 ULTRA VOXER HACKS LOADED SUCCESSFULLY!');
+                console.log('🎉 ULTRA VOXER HACKS V2 LOADED!');
             </script>
         `;
         
-        // Injecter au tout début du HTML
+        // Injecter au début
         html = html.replace(/<!DOCTYPE[^>]*>/i, '');
         html = html.replace(/<html[^>]*>/i, '');
         html = html.replace(/<head[^>]*>/i, '');
@@ -236,11 +270,10 @@ export default async function handler(req, res) {
         res.setHeader('Content-Type', 'text/html; charset=utf-8');
         res.setHeader('X-Frame-Options', 'ALLOWALL');
         res.setHeader('Content-Security-Policy', 'frame-ancestors *; script-src \'unsafe-inline\' \'unsafe-eval\' *; object-src *');
-        res.setHeader('Referrer-Policy', 'no-referrer-when-downgrade');
         
         res.send(finalHtml);
         
     } catch (error) {
-        res.status(500).send(`Erreur ultra-proxy: ${error.message}`);
+        res.status(500).send(`Erreur: ${error.message}`);
     }
 }
