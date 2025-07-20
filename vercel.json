@@ -3,12 +3,36 @@
         "api/proxy.js": {
             "maxDuration": 30
         },
-        "api/browser-proxy.js": {
-            "maxDuration": 60,
-            "memory": 1024
+        "api/enhanced-proxy.js": {
+            "maxDuration": 45,
+            "memory": 512
+        },
+        "api/smart-redirect.js": {
+            "maxDuration": 30
         }
     },
     "headers": [
+        {
+            "source": "/api/enhanced-proxy",
+            "headers": [
+                {
+                    "key": "X-Frame-Options",
+                    "value": "ALLOWALL"
+                },
+                {
+                    "key": "Content-Security-Policy",
+                    "value": "frame-ancestors *; script-src 'unsafe-inline' 'unsafe-eval' *; object-src 'self' *"
+                },
+                {
+                    "key": "Access-Control-Allow-Origin",
+                    "value": "*"
+                },
+                {
+                    "key": "Referrer-Policy",
+                    "value": "no-referrer-when-downgrade"
+                }
+            ]
+        },
         {
             "source": "/api/(.*)",
             "headers": [
@@ -19,10 +43,6 @@
                 {
                     "key": "X-Frame-Options",
                     "value": "ALLOWALL"
-                },
-                {
-                    "key": "Content-Security-Policy",
-                    "value": "frame-ancestors *"
                 }
             ]
         }
