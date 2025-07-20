@@ -1,6 +1,9 @@
 {
     "functions": {
-        "api/super-enhanced-proxy.js": {
+        "api/debug-proxy.js": {
+            "maxDuration": 30
+        },
+        "api/simple-proxy.js": {
             "maxDuration": 30
         }
     }
