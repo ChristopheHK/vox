@@ -1,0 +1,7 @@
+{
+  "name": "voxer-proxy",
+  "dependencies": {
+    "puppeteer-core": "^21.0.0",
+    "@sparticuz/chromium": "^118.0.0"
+  }
+}
