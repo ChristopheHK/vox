@@ -1,116 +1,157 @@
-// Dans la section DOMContentLoaded, remplacez par :
-
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('🎯 DOM ready, implementing SMART VOXER SEQUENCE...');
+export default async function handler(req, res) {
+    const { url } = req.query;
     
-    let phase = 'waiting_for_real_content';
-    let attempts = 0;
-    const maxAttempts = 10;
-    
-    function smartVoxerSequence() {
-        attempts++;
-        const bodyText = document.body.textContent.toLowerCase();
-        const bodyLength = document.body.textContent.length;
-        
-        console.log(\`🔍 Phase: \${phase}, Attempt: \${attempts}, Content length: \${bodyLength}\`);
-        
-        if (attempts > maxAttempts) {
-            console.log('⏰ Max attempts reached, forcing iframe fallback');
-            forceIframeFallback();
-            return;
-        }
-        
-        switch(phase) {
-            case 'waiting_for_real_content':
-                // Si on a encore la page de download ou contenu trop court
-                if (bodyText.includes('download voxer app') || bodyLength < 500) {
-                    console.log('⏳ Still waiting for real Voxer content...');
-                    setTimeout(smartVoxerSequence, 2000);
-                } else {
-                    console.log('✅ Real content detected, moving to click phase');
-                    phase = 'looking_for_button';
-                    setTimeout(smartVoxerSequence, 1500);
-                }
-                break;
-                
-            case 'looking_for_button':
-                if (bodyText.includes('open direct link') || bodyText.includes('direct access')) {
-                    console.log('🎯 Direct link button detected, attempting smart click');
-                    phase = 'clicking_button';
-                    setTimeout(smartVoxerSequence, 1000);
-                } else {
-                    console.log('🔍 No button yet, waiting more...');
-                    setTimeout(smartVoxerSequence, 2000);
-                }
-                break;
-                
-            case 'clicking_button':
-                performSmartClick();
-                phase = 'waiting_for_result';
-                setTimeout(smartVoxerSequence, 3000);
-                break;
-                
-            case 'waiting_for_result':
-                // Vérifier si ça a marché
-                if (bodyText.includes('download voxer app')) {
-                    console.log('❌ Clicked wrong button, back to download page');
-                    phase = 'waiting_for_real_content';
-                    setTimeout(smartVoxerSequence, 2000);
-                } else if (bodyText.includes('voxer content may require')) {
-                    console.log('🚀 Need to force iframe fallback');
-                    forceIframeFallback();
-                } else {
-                    console.log('✅ Smart sequence completed successfully');
-                }
-                break;
-        }
+    if (!url) {
+        return res.status(400).send('URL manquante');
     }
     
-    function performSmartClick() {
-        const buttons = document.querySelectorAll('a, button, div[onclick]');
-        let clicked = false;
-        
-        buttons.forEach(btn => {
-            if (!clicked) {
-                const text = (btn.textContent || '').toLowerCase();
-                const href = (btn.href || '').toLowerCase();
-                
-                // CRITÈRES STRICTS pour éviter les faux clics
-                if ((text.includes('open direct') || text.includes('direct link')) &&
-                    !text.includes('download') &&
-                    !text.includes('app') &&
-                    !href.includes('download') &&
-                    !href.includes('app-store') &&
-                    !href.includes('play.google')) {
-                    
-                    console.log('🎯 SMART CLICK:', text);
-                    btn.click();
-                    clicked = true;
-                }
+    try {
+        const response = await fetch(url, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                'Accept-Language': 'en-US,en;q=0.9',
+                'Referer': 'https://web.voxer.com/',
+                'Origin': 'https://web.voxer.com'
             }
         });
         
-        if (!clicked) {
-            console.log('⚠️ No suitable button found for smart click');
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
-    }
+        
+        let html = await response.text();
+        
+        // Script simplifié et sécurisé
+        const hackScript = `
+<script>
+console.log('Voxer proxy loading...');
+
+// Flash simulation
+try {
+    if (!navigator.plugins) navigator.plugins = {};
+    navigator.plugins['Shockwave Flash'] = {
+        name: 'Shockwave Flash',
+        version: '32.0.0.465'
+    };
     
-    function forceIframeFallback() {
-        document.body.innerHTML = \`
-            <style>
-                body { margin: 0; padding: 0; overflow: hidden; }
-                .direct-frame { width: 100vw; height: 100vh; border: none; }
-                .status { 
-                    position: fixed; top: 10px; left: 10px; z-index: 9999;
-                    background: #4CAF50; color: white; padding: 8px 15px;
-                    border-radius: 15px; font-size: 11px; font-family: Arial;
+    window.swfobject = {
+        hasFlashPlayerVersion: function() { return true; },
+        getFlashPlayerVersion: function() { return {major: 32, minor: 0}; }
+    };
+    
+    console.log('Flash simulation OK');
+} catch(e) {
+    console.log('Flash simulation failed:', e);
+}
+
+// Auto-click avec timing sécurisé
+function safeAutoClick() {
+    try {
+        var bodyText = document.body.textContent.toLowerCase();
+        
+        // Éviter la page de download
+        if (bodyText.indexOf('download voxer app') >= 0) {
+            console.log('Download page detected, waiting...');
+            setTimeout(safeAutoClick, 3000);
+            return;
+        }
+        
+        // Chercher le bouton direct link
+        var directButtons = document.querySelectorAll('a, button');
+        var clicked = false;
+        
+        for (var i = 0; i < directButtons.length; i++) {
+            var btn = directButtons[i];
+            var text = (btn.textContent || '').toLowerCase();
+            var href = (btn.href || '').toLowerCase();
+            
+            if ((text.indexOf('open direct') >= 0 || text.indexOf('direct link') >= 0) &&
+                text.indexOf('download') < 0 &&
+                href.indexOf('download') < 0) {
+                
+                console.log('Auto-clicking:', text);
+                btn.click();
+                clicked = true;
+                break;
+            }
+        }
+        
+        if (!clicked) {
+            console.log('No direct button found, trying iframe fallback...');
+            setTimeout(function() {
+                if (bodyText.indexOf('flash simulation active') >= 0) {
+                    replaceWithIframe();
                 }
-            </style>
-            <div class="status">🎯 Smart Fallback Active</div>
-            <iframe class="direct-frame" src="${url}"></iframe>
-        \`;
+            }, 5000);
+        }
+        
+    } catch(e) {
+        console.log('Auto-click error:', e);
     }
-    
-    // Démarrer la séquence après 2 secondes
-    setTimeout(smartVoxerSequence, 2000);
-});
+}
+
+function replaceWithIframe() {
+    try {
+        document.body.innerHTML = '<style>body{margin:0;padding:0;overflow:hidden;}</style>' +
+            '<div style="position:fixed;top:10px;left:10px;background:#4CAF50;color:white;padding:8px 15px;border-radius:15px;font-size:11px;z-index:9999;">Direct Access</div>' +
+            '<iframe src="${url}" style="width:100vw;height:100vh;border:none;"></iframe>';
+    } catch(e) {
+        console.log('Iframe replacement failed:', e);
+    }
+}
+
+// Démarrer après chargement DOM
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(safeAutoClick, 4000);
+    });
+} else {
+    setTimeout(safeAutoClick, 4000);
+}
+
+console.log('Voxer proxy script loaded');
+</script>`;
+
+        // Injecter le script au début du HTML
+        if (html.indexOf('<head') >= 0) {
+            html = html.replace(/<head[^>]*>/i, '$&' + hackScript);
+        } else if (html.indexOf('<body') >= 0) {
+            html = html.replace(/<body[^>]*>/i, '$&' + hackScript);
+        } else {
+            html = hackScript + html;
+        }
+        
+        // Headers pour iframe
+        res.setHeader('Content-Type', 'text/html; charset=utf-8');
+        res.setHeader('X-Frame-Options', 'ALLOWALL');
+        res.setHeader('Content-Security-Policy', 'frame-ancestors *');
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        
+        res.send(`<!DOCTYPE html><html>${html}</html>`);
+        
+    } catch (error) {
+        console.error('Proxy error:', error);
+        
+        // Page d'erreur simple
+        const errorPage = `
+            <!DOCTYPE html>
+            <html>
+            <head><title>Proxy Error</title></head>
+            <body style="font-family:Arial;padding:40px;text-align:center;background:#f5f5f5;">
+                <div style="background:white;padding:30px;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,0.1);">
+                    <h1 style="color:#e74c3c;">🚫 Proxy Error</h1>
+                    <p><strong>URL:</strong> ${url}</p>
+                    <p><strong>Error:</strong> ${error.message}</p>
+                    <hr>
+                    <a href="${url}" target="_blank" style="background:#007bff;color:white;padding:10px 20px;text-decoration:none;border-radius:5px;">
+                        Open Direct Link
+                    </a>
+                </div>
+            </body>
+            </html>
+        `;
+        
+        res.status(500).send(errorPage);
+    }
+}
