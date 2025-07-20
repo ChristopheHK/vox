@@ -13,7 +13,7 @@
     },
     "headers": [
         {
-            "source": "/api/enhanced-proxy",
+            "source": "/api/super-enhanced-proxy",
             "headers": [
                 {
                     "key": "X-Frame-Options",
