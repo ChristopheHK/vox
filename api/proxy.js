@@ -1,4 +1,4 @@
-// api/advanced-proxy.js
+// api/advanced-proxy.js for voxer
 export default async function handler(req, res) {
     const { url } = req.query;
     
