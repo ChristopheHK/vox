@@ -2,12 +2,20 @@
     "functions": {
         "api/proxy.js": {
             "maxDuration": 30
+        },
+        "api/browser-proxy.js": {
+            "maxDuration": 60,
+            "memory": 1024
         }
     },
     "headers": [
         {
             "source": "/api/(.*)",
             "headers": [
+                {
+                    "key": "Access-Control-Allow-Origin",
+                    "value": "*"
+                },
                 {
                     "key": "X-Frame-Options",
                     "value": "ALLOWALL"
